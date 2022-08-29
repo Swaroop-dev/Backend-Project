@@ -1,0 +1,18 @@
+openapi: 3.0.0
+info:
+  title: Sample API
+  description: Backend Project.
+  version: 1.0.0
+paths:
+  /users:
+    get:
+      summary: Returns a list of users.
+      description: Optional extended description in CommonMark or HTML.
+      responses:
+        '200':    # status code
+          description: user name
+          content:
+            application/json:
+              schema: 
+                type: json
+                
