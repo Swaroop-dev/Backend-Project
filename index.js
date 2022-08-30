@@ -1,16 +1,14 @@
 
-import express from 'express';
+const express=require('express')
+const {port}=require('./config')
 
-//swagger related imports
-import swaggerUi from 'swagger-ui-express';
-import YAML from 'yamljs';
+
+const swaggerUi=require('swagger-ui-express');
+const YAML = require('yamljs')
 const swaggerDocument = YAML.load('./swagger.yml')
 
 
 const app=express();
-const PORT=4000;
-
-
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
@@ -19,6 +17,7 @@ app.get('/users',(req, res) => {
 })
 
 
-app.listen(PORT, ()=>{
-    console.log(`server running at port ${PORT}`);
+
+app.listen(port, ()=>{
+    console.log(`server running at port ${port}`);
 })
