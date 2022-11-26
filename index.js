@@ -20,6 +20,7 @@ app.post("/register", async (req, res) => {
   try {
     // console.log(req.body)
     const { name, email, password } = req.body;
+    console.log("hello  world")
     
     if (!name && !email && !password) {
       res.status(400).send("All fields are required");
