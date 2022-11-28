@@ -15,7 +15,10 @@ const fileUpload = require("express-fileupload");
 //middlewares to be used 
 
 app.use(cookieParser());
-app.use(fileUpload());
+app.use(fileUpload({
+  useTempFiles:true,
+  tempFileDir:"/temp/"
+}));
 
 app.use(express.json());
 app.use(express.urlencoded({extend:true}));

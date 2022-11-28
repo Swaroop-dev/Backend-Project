@@ -30,17 +30,17 @@ const userSchema=new Schema({
     },
     phoneNumber:{
         type:'number',
-        required: true,
+        //required: true,
         unique: true,
     },
     photo:{
         id:{
             type:'string',
-            required: true,
+            //required: true,
         },
         secure_url:{
             type:'string',
-            required: true,
+            //required: true,
         }
     },
     forgotPasswordToken:{
@@ -68,7 +68,7 @@ userSchema.methods={
     },
 
     generateJwt: function(){
-        return  jwt.sign({id:this_id},secretkey,{
+        return  jwt.sign({id:this._id},secretkey,{
             expiresIn:'20d'
         })
     },
@@ -77,10 +77,13 @@ userSchema.methods={
     },
     forgotPassword: function(){
         this.forgotPasswordToken=crypto.randomBytes(20).toString('hex')
+        //set expiry time for token
         this.forgotPasswordTokenexpiry=Date.now()+20*60*60*24
         
         return this.forgotPasswordToken
     }
 }
 
-module.exports=model('user',userSchema);
+
+
+module.exports=model('User',userSchema);
