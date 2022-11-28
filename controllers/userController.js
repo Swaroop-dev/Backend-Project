@@ -11,10 +11,12 @@ exports.signup=BigPromise(async(req,res, next)=>{
     if(!email || !password || !name){
         return next(new Error("email,name,password are required. One or more are missing"))
     }
+    
     let result;
     if(!req.files){
         return next(new Error("profile photo missing"))
     }
+
     let file=req.files.photo   
     result=await cloudinary.v2.uploader.upload(file.tempFilePath,{folder:"User Profile"})
 
