@@ -11,7 +11,7 @@ exports.signup=BigPromise(async(req,res, next)=>{
     if(!email || !password || !name){
         return next(new Error("email,name,password are required. One or more are missing"))
     }
-    
+
     let result;
     if(!req.files){
         return next(new Error("profile photo missing"))
@@ -32,3 +32,26 @@ exports.signup=BigPromise(async(req,res, next)=>{
 
    await cookieToken(user,res);
 })
+
+
+exports.login=BigPromise(async(req, res, next)=>{
+    const {email,password}=req.body
+    //required fields validation
+    if(!email || !password){
+        return res.status(400)
+    }
+
+    //fetch user
+    const user=await User.findOne({email:email}).select("+password")
+
+    if(!user){
+        return next( new Error("account with this email does not exist.create account first or try with other email"))
+    }
+    //verify password
+    const match=await user.validatePassword(password)
+    if(!match){
+        return next(new Error("Email and password do not match"))
+    }
+
+    await cookieToken(user,res)
+});
