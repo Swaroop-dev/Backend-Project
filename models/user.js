@@ -22,7 +22,8 @@ const userSchema=new Schema({
     password:{
         type:'string',
         required: [true,'please provide password'],
-        minlength:8
+        minlength:8,
+        select:false
     },
     isSeller:{
         type:'boolean',
@@ -64,7 +65,7 @@ userSchema.pre('save',async function(next){
 
 userSchema.methods={
     validatePassword:async function(enteredPassword){
-        return bcrypt.compare(this.password,enteredPassword)
+        return await bcrypt.compare(enteredPassword,this.password)
     },
 
     generateJwt: function(){
