@@ -1,6 +1,6 @@
 const express=require('express')
 const route=express.Router()
-const {signup,login}=require('../controllers/userController')
+const {signup,login,logout}=require('../controllers/userController')
 
 route.route('/').get(function (req, res, next) {
     res.status(200).json({
@@ -18,5 +18,6 @@ route.route('/users').get(function (req, res, next) {
 route.route('/signup').post(signup)
 
 route.route('/login').post(login)
+route.route('/logout').get(logout)
 
 module.exports=route;
