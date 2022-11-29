@@ -2,6 +2,7 @@ const BigPromise=require('./../middlewares/BigPromise')
 const User=require('./../models/user')
 const cookieToken=require('../utils/cookieToken')
 const cloudinary=require('cloudinary')
+const mailHelper=require('../utils/emailHelper')
 
 exports.signup=BigPromise(async(req,res, next)=>{
     console.log("signup")
@@ -62,4 +63,30 @@ exports.logout=BigPromise(async(req, res, next)=>{
         httpOnly: true
     })
     res.status(200).json({message:"successfully logged out"})
+})
+
+exports.forgotPassword=BigPromise(async(req, res, next)=>{
+    const {email}=req.body
+
+    const user=await User.findOne({email:email})
+    // console.log(user)
+
+    const forgottoken=await user.forgotPassword()
+    // console.log(forgottoken)
+
+    const Url=`${req.protocol}://${req.get("host")}/password/reset/${forgottoken}`
+
+    const link=`open this link -- ${Url} url in your browser`
+
+    try {
+        await mailHelper({email:user.email,subject:"Reset passowrd",link:link})
+        res.status(200)
+        res.json({message:"email sent successfully"})
+        
+    } catch (error) {
+        user.forgotPasswordToken=undefined
+        user.forgotPasswordTokenexpiry=undefined
+        res.status(400).json({error})
+        await user.save()
+    }
 })
