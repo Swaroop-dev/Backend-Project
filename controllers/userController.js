@@ -117,6 +117,10 @@ exports.resetPassword=BigPromise(async(req, res, next)=>{
 
     user.password=password
 
+    //big fix
+    user.forgotPasswordToken=undefined
+    user.forgotPasswordTokenexpiry=undefined
+
     await user.save()
     res.status(200).json({message:"password changed successfully"})
 
