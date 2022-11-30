@@ -3,7 +3,7 @@ const {smtpPort,smtpHost,smtpUsername,smtpPassword}=require('../Config/config')
 
 
 const mailHelper=async({email,subject,link})=>{
-  console.log(email,"params")
+  
     
     // create reusable transporter object using the default SMTP transport
     let transporter = nodemailer.createTransport({

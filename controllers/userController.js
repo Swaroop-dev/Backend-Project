@@ -90,3 +90,36 @@ exports.forgotPassword=BigPromise(async(req, res, next)=>{
         await user.save()
     }
 })
+
+exports.resetPassword=BigPromise(async(req, res, next)=>{
+    const token = req.params.token
+
+    if (!token){
+        res.status(400)
+        res.json({message:"token missing"})
+        return
+    }
+
+    const user=await User.findOne({
+        token,
+        forgotPasswordTokenexpiry:{$gt:Date.now()}
+    })
+
+    if (!user){
+        return next(new Error("token as expired"))
+    }
+
+    const {pasword,confirmpassword}=req.body
+
+    if(password!=confirmpassword){
+        //reject the request
+    }
+
+    user.password=password
+
+    await user.save()
+    res.status(200).json({message:"password changed successfully"})
+
+
+    
+})
