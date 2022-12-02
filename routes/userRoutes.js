@@ -1,6 +1,6 @@
 const express=require('express')
 const route=express.Router()
-const {signup,login,logout,forgotPassword,resetPassword,getUserDetails,changePassword}=require('../controllers/userController')
+const {signup,login,logout,forgotPassword,resetPassword,getUserDetails,changePassword,updateUserDetails}=require('../controllers/userController')
 const { isLoggedIn } = require('../middlewares/user')
 
 
@@ -28,5 +28,6 @@ route.route('/password/reset/:token').post(resetPassword)
 
 route.route('/userDetails').get(isLoggedIn,getUserDetails)
 route.route('/userDetails/update/password').post(isLoggedIn,changePassword)
+route.route('/userDetails/update').post(isLoggedIn,updateUserDetails)
 
 module.exports=route;

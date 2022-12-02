@@ -148,3 +148,32 @@ exports.changePassword=BigPromise(async(req,res,next)=>{
 exports.getUserDetails=BigPromise(async(req,res,next)=>{
     res.status(200).json(req.user)
 })
+
+
+exports.updateUserDetails=BigPromise(async(req,res,next)=>{
+    const {_id}=req.user
+
+    const newData={
+        name:req.body.name,
+        email:req.body.email,
+    }
+
+    if(req.files){
+        const photoId=req.user.photo.id
+        await cloudinary.v2.uploader.destroy(photoId)
+
+        
+        const result=await cloudinary.v2.uploader.upload(req.files.photo.tempFilePath,{folder:"User Profile"})
+        newData.photo={
+            id:result.public_id,
+            secure_url:result.secure_url
+        }
+    }
+
+    const user=await User.findByIdAndUpdate(_id,newData,{
+        new:true,
+        runValidators:true
+    })
+
+    res.status(200).json({message:"user details updated successfully"})
+})
