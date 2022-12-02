@@ -73,6 +73,8 @@ exports.forgotPassword=BigPromise(async(req, res, next)=>{
 
     const forgottoken=await user.forgotPassword()
     // console.log(forgottoken)
+    user.forgotPasswordToken=forgottoken
+    await user.save()
 
     const Url=`${req.protocol}://${req.get("host")}/password/reset/${forgottoken}`
 
@@ -81,7 +83,7 @@ exports.forgotPassword=BigPromise(async(req, res, next)=>{
     try {
         await mailHelper({email:user.email,subject:"Reset passowrd",link:link})
         res.status(200)
-        res.json({message:"email sent successfully"})
+        res.json({user,message:"email sent successfully"})
         
     } catch (error) {
         user.forgotPasswordToken=undefined
@@ -101,7 +103,7 @@ exports.resetPassword=BigPromise(async(req, res, next)=>{
     }
 
     const user=await User.findOne({
-        token,
+        forgotPasswordToken:token,
         forgotPasswordTokenexpiry:{$gt:Date.now()}
     })
 
@@ -109,7 +111,7 @@ exports.resetPassword=BigPromise(async(req, res, next)=>{
         return next(new Error("token as expired"))
     }
 
-    const {pasword,confirmpassword}=req.body
+    const {password,confirmpassword}=req.body
 
     if(password!=confirmpassword){
         //reject the request
@@ -126,4 +128,12 @@ exports.resetPassword=BigPromise(async(req, res, next)=>{
 
 
     
+})
+
+exports.changePassword=BigPromise(async(req,res,next)=>{
+    const {password,newPassword}=req.body
+})
+
+exports.getUserDetails=BigPromise(async(req,res,next)=>{
+    res.status(200).json(req.user)
 })

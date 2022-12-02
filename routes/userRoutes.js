@@ -1,6 +1,8 @@
 const express=require('express')
 const route=express.Router()
-const {signup,login,logout,forgotPassword,resetPassword}=require('../controllers/userController')
+const {signup,login,logout,forgotPassword,resetPassword,getUserDetails}=require('../controllers/userController')
+const { isLoggedIn } = require('../middlewares/user')
+
 
 route.route('/').get(function (req, res, next) {
     res.status(200).json({
@@ -22,5 +24,8 @@ route.route('/logout').get(logout)
 route.route('/forgotpassword').post(forgotPassword)
 
 route.route('/password/reset/:token').post(resetPassword)
+// route.route('/changepassword').post(changePassword)
+
+route.route('/userDetails').get(isLoggedIn,getUserDetails)
 
 module.exports=route;

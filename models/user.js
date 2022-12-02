@@ -45,10 +45,12 @@ const userSchema=new Schema({
         }
     },
     forgotPasswordToken:{
-        type:'string',
+        type:String,
+        default:undefined
     },
     forgotPasswordTokenexpiry:{
-        type:'Date',
+        type:Date,
+        default:undefined
     }
 
 
@@ -73,9 +75,7 @@ userSchema.methods={
             expiresIn:'20d'
         })
     },
-    changePassword: function(){
-
-    },
+    
     forgotPassword: function(){
         this.forgotPasswordToken=crypto.randomBytes(20).toString('hex')
         //set expiry time for token
