@@ -131,7 +131,18 @@ exports.resetPassword=BigPromise(async(req, res, next)=>{
 })
 
 exports.changePassword=BigPromise(async(req,res,next)=>{
+    const {_id}=req.user
     const {password,newPassword}=req.body
+
+    const user=await User.findById(_id).select("+password")
+    const Ismatch=user.validatePassword(password)
+    if (!Ismatch){
+        res.json(400).json({message:"old password is incorrect"})
+        return
+    }
+    user.password = newPassword
+    await user.save()
+    res.status(200).json({message:"password changed successfully"})
 })
 
 exports.getUserDetails=BigPromise(async(req,res,next)=>{
