@@ -177,3 +177,9 @@ exports.updateUserDetails=BigPromise(async(req,res,next)=>{
 
     res.status(200).json({message:"user details updated successfully"})
 })
+
+
+exports.getAllUsers=BigPromise(async(req, res, next)=>{
+    const users =await User.find()
+    res.status(200).json({users})
+})

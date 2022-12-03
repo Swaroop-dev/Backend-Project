@@ -13,3 +13,16 @@ exports.isLoggedIn=BigPromise(async(req,res,next)=>{
     req.user=await User.findById(id)
     next()
 })
+
+exports.customRoleChecker=(...roles)=>{
+    return (req,res,next) => {
+        
+        if(!roles.includes(req.user.role)){
+            res.status(400).json({message:"user doesnt have previliges"})
+            return
+        }
+        next()
+    }
+   
+   
+}
