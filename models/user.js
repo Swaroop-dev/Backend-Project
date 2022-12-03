@@ -50,7 +50,12 @@ const userSchema=new Schema({
     },
     forgotPasswordTokenexpiry:{
         type:Date,
-        default:undefined
+        default:undefined,
+
+    },
+    role:{
+        type:'string',
+        default:"buyer"
     }
 
 
