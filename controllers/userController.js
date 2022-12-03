@@ -183,3 +183,17 @@ exports.getAllUsers=BigPromise(async(req, res, next)=>{
     const users =await User.find()
     res.status(200).json({users})
 })
+
+exports.getUserAdmin=BigPromise(async(req, res, next)=>{
+    const userid=req.params.userId
+
+    const user=await User.findById(userid)
+
+    if(!user){
+        res.status(400).json({message:"user not found"})
+        return
+    }
+
+    res.status(200).json(user)
+
+})
