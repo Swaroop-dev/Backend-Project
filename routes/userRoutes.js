@@ -3,6 +3,7 @@ const route=express.Router()
 const {signup,login,logout,forgotPassword,
   resetPassword,getUserDetails,changePassword,updateUserDetails,
   getUserAdmin,
+  deleteUserAdmin,
   getAllUsers}=require('../controllers/userController')
 const { isLoggedIn,customRoleChecker } = require('../middlewares/user')
 
@@ -28,6 +29,8 @@ route.route('/userDetails/update').post(isLoggedIn,updateUserDetails)
 
 //Admin routes
 route.route('/users').get(isLoggedIn,customRoleChecker("Admin"),getAllUsers)
-route.route('/admin/users/:userId').get(isLoggedIn,customRoleChecker("Admin"),getUserAdmin)
+route.route('/admin/users/:userId')
+.get(isLoggedIn,customRoleChecker("Admin"),getUserAdmin)
+.delete(isLoggedIn,customRoleChecker("Admin"),deleteUserAdmin)
 
 module.exports=route;
