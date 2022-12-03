@@ -21,7 +21,7 @@ const mailHelper=async({email,subject,link})=>{
       from: 'sender@server.com', 
       to: email, 
       subject: subject, 
-      text: "hello world", 
+      text: link, 
     });
 
     console.log("Message sent: %s", info.messageId);

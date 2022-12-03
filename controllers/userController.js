@@ -73,6 +73,8 @@ exports.forgotPassword=BigPromise(async(req, res, next)=>{
 
     const forgottoken=await user.forgotPassword()
     // console.log(forgottoken)
+    user.forgotPasswordToken=forgottoken
+    await user.save()
 
     const Url=`${req.protocol}://${req.get("host")}/password/reset/${forgottoken}`
 
@@ -81,7 +83,7 @@ exports.forgotPassword=BigPromise(async(req, res, next)=>{
     try {
         await mailHelper({email:user.email,subject:"Reset passowrd",link:link})
         res.status(200)
-        res.json({message:"email sent successfully"})
+        res.json({user,message:"email sent successfully"})
         
     } catch (error) {
         user.forgotPasswordToken=undefined
@@ -101,7 +103,7 @@ exports.resetPassword=BigPromise(async(req, res, next)=>{
     }
 
     const user=await User.findOne({
-        token,
+        forgotPasswordToken:token,
         forgotPasswordTokenexpiry:{$gt:Date.now()}
     })
 
@@ -109,7 +111,7 @@ exports.resetPassword=BigPromise(async(req, res, next)=>{
         return next(new Error("token as expired"))
     }
 
-    const {pasword,confirmpassword}=req.body
+    const {password,confirmpassword}=req.body
 
     if(password!=confirmpassword){
         //reject the request
@@ -126,4 +128,58 @@ exports.resetPassword=BigPromise(async(req, res, next)=>{
 
 
     
+})
+
+exports.changePassword=BigPromise(async(req,res,next)=>{
+    const {_id}=req.user
+    const {password,newPassword}=req.body
+
+    const user=await User.findById(_id).select("+password")
+    const Ismatch=user.validatePassword(password)
+    if (!Ismatch){
+        res.json(400).json({message:"old password is incorrect"})
+        return
+    }
+    user.password = newPassword
+    await user.save()
+    res.status(200).json({message:"password changed successfully"})
+})
+
+exports.getUserDetails=BigPromise(async(req,res,next)=>{
+    res.status(200).json(req.user)
+})
+
+
+exports.updateUserDetails=BigPromise(async(req,res,next)=>{
+    const {_id}=req.user
+
+    const newData={
+        name:req.body.name,
+        email:req.body.email,
+    }
+
+    if(req.files){
+        const photoId=req.user.photo.id
+        await cloudinary.v2.uploader.destroy(photoId)
+
+        
+        const result=await cloudinary.v2.uploader.upload(req.files.photo.tempFilePath,{folder:"User Profile"})
+        newData.photo={
+            id:result.public_id,
+            secure_url:result.secure_url
+        }
+    }
+
+    const user=await User.findByIdAndUpdate(_id,newData,{
+        new:true,
+        runValidators:true
+    })
+
+    res.status(200).json({message:"user details updated successfully"})
+})
+
+
+exports.getAllUsers=BigPromise(async(req, res, next)=>{
+    const users =await User.find()
+    res.status(200).json({users})
 })
