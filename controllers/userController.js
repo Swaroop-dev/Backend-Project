@@ -183,3 +183,34 @@ exports.getAllUsers=BigPromise(async(req, res, next)=>{
     const users =await User.find()
     res.status(200).json({users})
 })
+
+exports.getUserAdmin=BigPromise(async(req, res, next)=>{
+    const userid=req.params.userId
+
+    const user=await User.findById(userid)
+
+    if(!user){
+        res.status(400).json({message:"user not found"})
+        return
+    }
+
+    res.status(200).json(user)
+
+})
+
+exports.deleteUserAdmin=BigPromise(async(req, res, next)=>{
+    const userid=req.params.userId
+
+    const user=await User.findById(userid)
+
+    if(!user){
+        res.status(400).json({message:"user not found"})
+        return
+    }
+
+    const tempresult=await cloudinary.v2.destroy(result.photo.id)
+
+    const result=await User.deleteOne({_id:userid})
+
+    res.status(200).json({message:"user deleted successfully"})
+})
