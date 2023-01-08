@@ -83,3 +83,30 @@ exports.updateProductById=BigPromise(async(req, res,next)=>{
     res.status(204).json({message:"Product created successfully",updatedproduct})
     
 })
+
+
+exports.deleteProductbyId=BigPromise(async(req,res,next)=>{
+    const product=await Product.findById(req.params.id)
+
+    if(!product){
+        res.status(400).json({message:"product doesnt exist"})
+        return
+    }
+
+    if(product.photos>0){
+        //deleting existing images
+
+        for(let i=0;i<product.photos.length;i++){
+            const res=await cloudinary.v2.uploader.destroy(product.photos[i].id);
+        }
+        
+ 
+    }
+
+    
+
+
+    await product.remove()
+    res.status(200).json({message:"Product deleted successfully"})
+    
+})
