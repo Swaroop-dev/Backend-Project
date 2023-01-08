@@ -65,10 +65,12 @@ app.post("/register", async (req, res) => {
 
 //importing routes from routes.js
 const userRoutes=require('./routes/userRoutes')
+const productRoutes=require('./routes/productRoutes')
 
 
 
 //exposing routes 
 app.use('/api/v1',userRoutes)
+app.use('/api/v1',productRoutes)
 
 module.exports=app;
