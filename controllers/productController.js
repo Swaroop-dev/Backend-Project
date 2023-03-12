@@ -59,7 +59,7 @@ exports.updateProductById=BigPromise(async(req, res,next)=>{
         return
     }
 
-    if(req.files>0){
+    if(req.files){
         //deleting existing images
 
         for(let i=0;i<product.photos.length;i++){
@@ -80,7 +80,7 @@ exports.updateProductById=BigPromise(async(req, res,next)=>{
     req.body.user=req.user._id
 
     const updatedproduct=await Product.findByIdAndUpdate(product._id,req.body)
-    res.status(204).json({message:"Product created successfully",updatedproduct})
+    res.status(204).json({message:"Product updated successfully",updatedproduct})
     
 })
 
