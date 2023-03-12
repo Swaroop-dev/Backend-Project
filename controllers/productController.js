@@ -4,6 +4,7 @@ const Product=require('./../models/product')
 const cookieToken=require('../utils/cookieToken')
 const cloudinary=require('cloudinary')
 const mailHelper=require('../utils/emailHelper')
+const user = require('./../models/user')
 
 
 exports.addProduct=BigPromise(async(req, res, next)=>{
@@ -109,4 +110,56 @@ exports.deleteProductbyId=BigPromise(async(req,res,next)=>{
     await product.remove()
     res.status(200).json({message:"Product deleted successfully"})
     
+})
+
+exports.addReviewForProductyId=BigPromise(async(req,res,next)=>{
+    if (!req.params.id){
+        res.status(400).json({message:"product Id required to add review"})
+        return
+
+    }
+
+    const product =await Product.findById(req.params.id)
+    if (!product){
+        res.status(404).json({message:`Product with ${req.params.id} is not found`})
+        return
+    }
+    const {rating}=req.body
+    const userReview={
+        user:req.user._id,
+        name:req.user.name,
+        rating:parseInt(rating)
+
+    }
+    console.log(userReview)
+    const checkIfAlreadyReviewed=product.reviews.find(it=>it.user.toString()==req.user._id.toString())
+
+    if (checkIfAlreadyReviewed){
+        product.reviews.forEach(rev=>{
+            console.log(rev)
+            if(rev.user._id.toString()==userReview.user.toString()){
+                rev.rating=userReview.rating
+        }
+    })
+    
+    }
+
+
+    else{
+       product.reviews.push(userReview);
+       product.numberOfReviews=product.numberOfReviews+1
+       if(product.numberOfReviews==1){
+            product.ratings=userReview.rating
+       }
+       else{
+        product.ratings=product.ratings+(user.rating/(product.numberOfReviews-1))
+       }
+       
+    }
+    await product.save()
+    res.status(204).json({message:"user review updated successfully"})
+
+
+
+
 })
