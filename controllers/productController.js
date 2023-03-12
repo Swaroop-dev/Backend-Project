@@ -23,7 +23,6 @@ exports.addProduct=BigPromise(async(req, res, next)=>{
     }
     req.body.photos=images
     req.body.user=req.user._id
-    console.log(req.body)
 
     const product=await Product.create(req.body)
 
