@@ -9,13 +9,13 @@ const mailHelper=require('../utils/emailHelper')
 exports.addProduct=BigPromise(async(req, res, next)=>{
     let images=[]
 
-    if(req.files==0){
+    if(!req.files){
         //handle request
         res.status(400).json({message:"Images of the product is required"})
     }
 
     for(let i=0;i<req.files.photo.length;i++){
-        let result=await cloudinary.upload(req.files.photo[i].tempFilePath,{folder:"Product gallery"})
+        let result=await cloudinary.v2.uploader.upload(req.files.photo[i].tempFilePath,{folder:"Product gallery"})
         images.push({
             id:result.public_id,
             secure_url:result.secure_url
@@ -23,8 +23,9 @@ exports.addProduct=BigPromise(async(req, res, next)=>{
     }
     req.body.photos=images
     req.body.user=req.user._id
+    console.log(req.body)
 
-    const product=await Product.createCollection(req.body)
+    const product=await Product.create(req.body)
 
     res.status(200).json({message:"Product created successfully",product})
 

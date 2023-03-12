@@ -11,8 +11,7 @@ route.route('/product/:id').post(isLoggedIn,customRoleChecker("Admin"),updatePro
                            .delete(isLoggedIn,customRoleChecker("Admin"),deleteProductbyId)
 
 //doesnt require admin previliges
-route.route('/products').post(getAllProduct)
-route.route('/product/:id').get(getAllProductById)
+route.route('/products').post(getAllProduct);
 
 
 
