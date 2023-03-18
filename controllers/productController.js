@@ -163,3 +163,19 @@ exports.addReviewForProductyId=BigPromise(async(req,res,next)=>{
 
 
 })
+
+
+exports.getReviewForProductById=BigPromise(async(req,res,next)=>{
+    const {id}=req.params
+    if (!id){
+        return res.status(400).json({message:"Product id not sent as part of request"})
+    }
+
+    const product=await Product.findById(id);
+    if(!product){
+        return res.status(400).json({message:"product with that id is not found"})
+    }
+
+    return res.status(200).json({message:"Product review success",data:product.reviews})
+
+})

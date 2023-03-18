@@ -1,6 +1,6 @@
 const express=require('express')
 const route=express.Router()
-const {addProduct,getAllProduct,updateProductById,getAllProductById,deleteProductbyId,addReviewForProductyId}=require('../controllers/productController')
+const {addProduct,getAllProduct,updateProductById,getAllProductById,deleteProductbyId,addReviewForProductyId,getReviewForProductById}=require('../controllers/productController')
 const { isLoggedIn,customRoleChecker } = require('../middlewares/user')
 
 //admin route
@@ -15,6 +15,7 @@ route.route('/products').get(getAllProduct);
 
 //review routes
 route.route('/product/:id/review').post(isLoggedIn,addReviewForProductyId)
+                                  .get(isLoggedIn,getReviewForProductById)
 
 
 
