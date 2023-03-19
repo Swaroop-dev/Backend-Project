@@ -9,7 +9,9 @@ module.exports = {
   smtpHost: process.env.SMTP_HOST, 
   smtpPort: process.env.SMTP_PORT,
   smtpUsername:process.env.SMTP_USERNAME,
-  smtpPassword:process.env.SMTP_PASSWORD
+  smtpPassword:process.env.SMTP_PASSWORD,
+  stripeSecretKey:process.env.STRIPE_SCERET_KEY,
+  stripePublishKey:process.env.STRIPE_PUBLISH_KEY
 };
 
 
